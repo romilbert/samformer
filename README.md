@@ -1,7 +1,27 @@
 # SAMformer
 
 ## Overview
-This is the official implementation of SAMformer, a novel transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks.
+This is the official implementation of SAMformer, a novel lightweight transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks. In particular, SAMformer surpasses the current state-of-the-art model [TSMixer](https://github.com/google-research/google-research/tree/master/tsmixer/tsmixer_basic) by $\mathbf{14.33\%}$ on average, while having $\mathbf{\sim4}$ times fewer parameters.
+
+## Architecture
+SAMformer takes as input a $D$-dimensional time series of length $L$ (*look-back window*), arranged in a matrix $\mathbf{X}\in\mathbb{R}^{D\times L}$ and predicts its next $H$ values (*prediction horizon*), denoted by $\mathbf{Y}\in\mathbb{R}^{D\times H}$. The main components of the architecture are the following. 
+
+💡 **Shallow transformer encoder.** The neural network at the core of SAMformer is a shallow encoder of a simplified [Transformer](https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf). Channel-wise attention is applied to the input, followed by a residual connection. Instead of the usual feedforward block, a linear layer is directly applied on top of the residual connection to output the prediction.
+
+💡 **Channel-Wise Attention.**  Contrary to the usual temporal attention in $\mathbb{R}^{L \times L}$, the channel-wise self-attention is represented by a matrix in $\mathbb{R}^{D \times D}$ and consists of the pairwise correlations between the input's features. This brings two important benefits: 
+- Feature permutation invariance, eliminating the need for positional encoding, commonly applied before the attention layer;
+- Reduced time and memory complexity as $D \leq l$ in most of the real-world datasets.
+
+💡 **Reversible Instance Normalization (RevIN).** The resulting network is equipped with [RevIN](https://openreview.net/pdf?id=cGDAkQo1C0p), a two-step normalization scheme to handle the shift between the training and testing time series. The official implementation of RevIN is available [here](https://github.com/ts-kim/RevIN).
+ 
+💡 **Sharpness-Aware Minimization (SAM).** As suggested by our empirical and theoretical analysis, we optimize the model with [SAM](https://openreview.net/pdf?id=6Tm1mposlrM) to make it converge towards flatter minima, hence improving its generalization capacity. The official implementation of SAM is available [here](https://github.com/google-research/sam).
+
+SAMformer uniquely combines all these components in a lightweight implementation with very few hyperparameters. We display below the resulting architecture. 
+
+<p align="center">
+  <img src="https://github.com/romilbert/samformer/assets/64415312/81b7eef3-f09e-479c-9be4-84fbb66f3aa4" width="200">
+</p>
+
 
 ## Installation
 To get started with SAMformer, clone this repository and install the required packages.
