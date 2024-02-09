@@ -12,9 +12,9 @@ SAMformer takes as input a $D$-dimensional time series of length $L$ (*look-back
 - Feature permutation invariance, eliminating the need for positional encoding, commonly applied before the attention layer;
 - Reduced time and memory complexity as $D \leq L$ in most of the real-world datasets.
 
-💡 **Reversible Instance Normalization (RevIN).** The resulting network is equipped with [RevIN](https://openreview.net/pdf?id=cGDAkQo1C0p), a two-step normalization scheme to handle the shift between the training and testing time series. The official implementation of RevIN is available [here](https://github.com/ts-kim/RevIN).
+💡 **Reversible Instance Normalization (RevIN).** The resulting network is equipped with [RevIN](https://openreview.net/pdf?id=cGDAkQo1C0p), a two-step normalization scheme to handle the shift between the training and testing time series.
  
-💡 **Sharpness-Aware Minimization (SAM).** As suggested by our empirical and theoretical analysis, we optimize the model with [SAM](https://openreview.net/pdf?id=6Tm1mposlrM) to make it converge towards flatter minima, hence improving its generalization capacity. The official implementation of SAM is available [here](https://github.com/google-research/sam).
+💡 **Sharpness-Aware Minimization (SAM).** As suggested by our empirical and theoretical analysis, we optimize the model with [SAM](https://openreview.net/pdf?id=6Tm1mposlrM) to make it converge towards flatter minima, hence improving its generalization capacity. 
 
 SAMformer uniquely combines all these components in a lightweight implementation with very few hyperparameters. We display below the resulting architecture. 
 
@@ -22,6 +22,18 @@ SAMformer uniquely combines all these components in a lightweight implementation
   <img src="https://github.com/romilbert/samformer/assets/64415312/81b7eef3-f09e-479c-9be4-84fbb66f3aa4" width="200">
 </p>
 
+
+## Results
+We conduct our experiments on various multivariate time series forecasting benchmarks. 
+
+🥇 **Improved performance.** SAMformer outperforms its competitors in $\mathbf{7}$ **out of** $\mathbf{8}$ datasets by a large margin. In particular, it improves over its best competitor TSMixer+SAM by $\mathbf{5.25}$%, surpasses the standalone TSMixer by $\mathbf{14.33}$%, and the best transformer-based model FEDformer by $\mathbf{12.36}$%. In addition, it improves over the vanilla Transformer by $\mathbf{16.96}$%. For each dataset and horizon, SAMformer is ranked either first or second.
+<p align="center">
+  <img src="https://github.com/romilbert/samformer/assets/64415312/d39ae38e-5f88-47e6-ba5d-04d4de8f2aca" width="600">
+</p>
+
+🚀 **Computational efficiency and versatility.** SAMformer has a lightweight implementation with few learnable parameters, contrary to most of its competitors, leading to improved computational efficiency. SAMformer significantly outperforms the SOTA in multivariate time series despite having fewer parameters. In addition, the same architecture is used for all the datasets, while most of the other baselines require heavy hyperparameter tuning, which showcases the versatility of our approach.
+
+📚 **Qualitative benefits.** We display in our paper the benefits of SAMformer in terms of smoothness of the loss landscape, robustness to the prediction horizons, and signal propagation in the attention layer.
 
 ## Installation
 To get started with SAMformer, clone this repository and install the required packages.
