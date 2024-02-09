@@ -1,10 +1,10 @@
 # SAMformer
 
 ## Overview
-This is the official implementation of SAMformer, a novel lightweight transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks. In particular, SAMformer surpasses the current state-of-the-art model [TSMixer](https://github.com/google-research/google-research/tree/master/tsmixer/tsmixer_basic) by $\mathbf{14.33\%}$ on average, while having $\mathbf{\sim4}$ times fewer parameters.
+This is the official implementation of SAMformer, a novel lightweight transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks. In particular, SAMformer surpasses the current state-of-the-art model [TSMixer](https://github.com/google-research/google-research/tree/master/tsmixer/tsmixer_basic) by with a **14.33% relative improvement** on eight benchmarks, while having $\mathbf{\sim4}$ times fewer parameters.
 
 ## Architecture
-SAMformer takes as input a $D$-dimensional time series of length $L$ (*look-back window*), arranged in a matrix $\mathbf{X}\in\mathbb{R}^{D\times L}$ and predicts its next $H$ values (*prediction horizon*), denoted by $\mathbf{Y}\in\mathbb{R}^{D\times H}$. The main components of the architecture are the following. 
+SAMformer takes as input a time series with D dimensions and of length L (*look-back window*), arranged in a matrix (denoted as X, which belongs to R^DxL) and predicts its next H values (*prediction horizon*), denoted by Y $\in$ R^DxH. The main components of the architecture are the following:
 
 💡 **Shallow transformer encoder.** The neural network at the core of SAMformer is a shallow encoder of a simplified [Transformer](https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf). Channel-wise attention is applied to the input, followed by a residual connection. Instead of the usual feedforward block, a linear layer is directly applied on top of the residual connection to output the prediction.
 
