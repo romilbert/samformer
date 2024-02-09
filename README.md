@@ -44,7 +44,7 @@ sh run_script.sh -m transformer -d ETTh1 -u -a
 This project is licensed under the MIT License. See the LICENSE file for more details.
 
 ## Contact
-If you have any questions, please contact romain.ilbert@hotmail.fr or open an issue.
+Feel free to contact romain.ilbert@hotmail.fr if you have any questions and do not hesitate to open an issue, we would be happy to integrate your suggestions.
 
 ## Acknowledgements 
 We would like to express our gratitude to all the researchers and developers whose open-source software has contributed to the development of SAMformer. Special thanks to the developers of Sharpness-Aware Minimization, TSMixer, and Sigma Reparam for their instructive works, which have enabled our approach. Your contributions to the field of machine learning and time series forecasting are greatly appreciated.
