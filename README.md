@@ -1,7 +1,7 @@
 # SAMformer
 
 ## Overview
-SAMformer is the official implementation of a novel transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks.
+This is the official implementation of SAMformer, a novel transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks.
 
 ## Installation
 To get started with SAMformer, clone this repository and install the required packages.
