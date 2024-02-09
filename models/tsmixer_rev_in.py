@@ -42,13 +42,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-"""Implementation of TSMixer with Reversible Instance Normalization."""
-
 from tensorflow.keras import layers, Model
 import tensorflow as tf
-from rev_in import RevNorm
-from sam import SAM
+from .utils import RevNorm, SAM
 
 class TSMixerModel(Model):
     """

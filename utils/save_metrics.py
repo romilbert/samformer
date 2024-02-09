@@ -74,7 +74,35 @@ def save_main_results(history, test_result, args, elapsed_training_time, current
 
 def save_training_history(history, args, current_directory):
     """
-    Saves the training history to a CSV file.
+    Saves the training history, including epoch numbers, model name, prediction horizon,
+    dataset used, whether SAM (Sharpness-Aware Minimization) was used, training loss, and validation loss,
+    to a CSV file. The file is named based on the model, dataset, and whether SAM was employed,
+    ensuring unique filenames for different training configurations.
+
+    The function appends the new training history to the existing file if it already exists,
+    allowing for cumulative recording of training sessions without overwriting previous data.
+
+    Parameters:
+        history (tf.keras.callbacks.History): The training history object returned by the fit method
+                                              of a Keras model. It contains loss metrics recorded over
+                                              each epoch of training.
+        args (argparse.Namespace): A namespace object containing command line arguments. Expected
+                                   to include 'model' (the model name), 'pred_len' (prediction horizon),
+                                   'data' (the dataset name), and 'use_sam' (a boolean indicating if SAM
+                                   was used during training).
+        current_directory (str): The directory path where the training history CSV file will be saved.
+                                 The function constructs a subdirectory named 'results' within this path
+                                 to store the file.
+
+    Outputs:
+        A CSV file named 'history_[model name]_[dataset]{_sam if SAM was used}.csv' in the
+        '[current_directory]/results' directory. The file contains columns for epoch number, model name,
+        prediction horizon, dataset, SAM usage, training loss, and validation loss. If the file already exists,
+        the function appends the new data to it, preserving any existing data.
+
+    Example Filename:
+        'results/history_modelname_datasetname_sam.csv' if SAM was used,
+        'results/history_modelname_datasetname.csv' if SAM was not used.
     """
     logger = logging.getLogger(__name__)
     epochs = range(1, len(history.history['loss']) + 1)
@@ -91,21 +119,26 @@ def save_training_history(history, args, current_directory):
     df.to_csv(history_csv_path, mode='a' if os.path.exists(history_csv_path) else 'w', index=False, header=not os.path.exists(history_csv_path))
     logger.info(f"Training history saved to {history_csv_path}")
 
-def save_additional_metrics(model, args, history, test_result, elapsed_training_time, train_data, current_directory, capture_weights_callback):
+def save_additional_metrics(model, args, train_data, current_directory, capture_weights_callback):
     """
-    Saves additional metrics including attention weights and sharpness,
-    if the --add_results argument is specified. Attention weights are calculated
-    on a batch of 32 sequences every 5 epochs by default, which is the capture frequency set in the callback.
-    The sharpness is computed using power iteration at the end of training process.
+    Saves additional metrics including attention weights and sharpness, if the --add_results
+    command line argument is specified. Attention weights are calculated on a batch of 32 sequences
+    every 5 epochs by default, which is the capture frequency set in the CaptureWeightsCallback.
+    The sharpness, measured as the largest eigenvalue of the Hessian matrix, is computed using
+    power iteration at the end of the training process.
 
     Parameters:
         model (tf.keras.Model): The trained model.
-        args (argparse.Namespace): Command line arguments specified by the user.
-        history (History): Training history returned by model.fit().
-        test_result (tuple): The result of model evaluation on the test dataset.
-        elapsed_training_time (float): The time elapsed for the model training.
-        train_data (tf.data.Dataset): The training dataset.
-        current_directory (str): The current working directory to save the results.
+        args (argparse.Namespace): Command line arguments specified by the user. Must include
+                                   'add_results' to indicate if additional results should be saved.
+        train_data (tf.data.Dataset): The training dataset used to compute sharpness.
+        current_directory (str): The current working directory where results are saved.
+        capture_weights_callback (CaptureWeightsCallback): The callback instance used during training
+                                                           to capture attention weights.
+
+    Note:
+        - The attention weights are saved as a NumPy array (.npy) file.
+        - The sharpness (largest eigenvalue of the Hessian matrix) is saved in a CSV file.
     """
     logger = logging.getLogger(__name__)
     # Check if additional results saving is requested
@@ -130,24 +163,3 @@ def save_additional_metrics(model, args, history, test_result, elapsed_training_
     eigenvalues_path = os.path.join(current_directory, f"results/eigenvalues_{args.model}_{args.data}.csv")
     eigenvalues_df.to_csv(eigenvalues_path, index=False)
     logger.info(f"Eigenvalues (sharpness) recorded at {eigenvalues_path}")
-
-    # Saving the main results in a dictionary and saving in a CSV
-    results_data = {
-        'data': args.data,
-        'model': args.model,
-        'seq_len': args.seq_len,
-        'pred_len': args.pred_len,
-        'lr': args.learning_rate,
-        'mse': test_result[0],
-        'mae': test_result[1],
-        'val_mse': min(history.history['val_loss']),
-        'val_mae': history.history['val_mae'][np.argmin(history.history['val_loss'])],
-        'train_mse': history.history['loss'][np.argmin(history.history['val_loss'])],
-        'train_mae': history.history['mae'][np.argmin(history.history['val_loss'])],
-        'training_time': elapsed_training_time,
-        'rho': args.rho
-    }
-    results_df = pd.DataFrame([results_data])
-    results_path = os.path.join(current_directory, f"results/results_summary_{args.model}_{args.data}{'_sam' if args.use_sam else ''}.csv")
-    results_df.to_csv(results_path, mode='a' if os.path.exists(results_path) else 'w', index=False, header=not os.path.exists(results_path))
-    logger.info(f"Main training results saved at {results_path}")

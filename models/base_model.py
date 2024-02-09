@@ -25,9 +25,7 @@
 import tensorflow as tf
 from tensorflow.keras import layers
 import collections
-from rev_in import RevNorm
-from spectral_norm import SpectralNormalizedAttention
-from sam import SAM
+from models.utils import RevNorm, SAM, SpectralNormalizedAttention
 
 class BaseModel(tf.keras.Model):
     """
@@ -36,7 +34,6 @@ class BaseModel(tf.keras.Model):
     spectral normalization and SAM optimization.
     
     Attributes:
-        input_shape (Tuple[int, int]): The shape of the input data.
         pred_len (int): The length of the prediction.
         num_heads (int): The number of attention heads.
         d_model (int): The dimensionality of the model.
@@ -54,12 +51,11 @@ class BaseModel(tf.keras.Model):
         spec (bool): Flag to indicate the usage of spectral normalization.
     """
 
-    def __init__(self, model_input_shape, pred_len, num_heads=1, d_model=16, use_sam=None, 
+    def __init__(self, pred_len, num_heads=1, d_model=16, use_sam=None, 
                  use_attention=None, norm_type=None, activation=None, dropout=None, 
                  ff_dim=None, n_blocks=None, use_blocks=False, use_revin=None, 
                  trainable=None, rho=None, spec=None):
         super(BaseModel, self).__init__()
-        #self.model_input_shape = model_input_shape
         self.pred_len = pred_len
         self.num_heads = num_heads
         self.d_model = d_model
