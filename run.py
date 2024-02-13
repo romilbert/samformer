@@ -129,7 +129,6 @@ def parse_args():
 def main():
     # Parse command-line arguments
     args = parse_args()
-    model_name = args.model
 
     # Configure the execution environment
     current_directory = configure_environment()
