@@ -30,17 +30,21 @@ from .model_utils import cosine_annealing
 
 class CaptureWeightsCallback(tf.keras.callbacks.Callback):
     """
-    A custom callback designed to capture and analyze the weights of a model during training, specifically
-    focusing on capturing attention weights at specified intervals.
+    Custom TensorFlow callback for capturing and logging model weights during training, with a focus on attention weights.
+
+    This callback is designed to monitor the evolution of model weights, particularly attention weights, across training epochs.
+    It facilitates the analysis of training dynamics and model behavior by storing weight snapshots at specified intervals.
 
     Attributes:
-        model (tf.keras.Model): The model from which weights are captured.
-        attention_weights_history (list): A history of attention weights captured during training, stored
-                                          at intervals specified by the training routine (default is every 5 epochs).
+        model (tf.keras.Model): Instance of the TensorFlow model being trained. The model should have a method
+                                `get_last_attention_weights()` that this callback can invoke to obtain attention weights.
+        attention_weights_history (list): Accumulates the attention weights captured at the end of specified epochs. 
+                                          This history facilitates post-training analysis of weight adjustments.
 
     Methods:
-        on_epoch_end(epoch, logs=None): Captures attention weights from the model at the end of specified epochs.
-        get_attention_weights_history(): Returns the collected history of attention weights.
+        on_epoch_end(epoch, logs=None): Overrides the base class method to capture attention weights at the end of each epoch.
+                                        Weights are captured based on specified criteria, e.g., every 5 epochs.
+        get_attention_weights_history(): Provides access to the accumulated history of attention weights captured during training.
     """
     
     def __init__(self, model):
@@ -84,32 +88,31 @@ class CaptureWeightsCallback(tf.keras.callbacks.Callback):
 
 def setup_callbacks(args, checkpoint_path, model):
     """
-    Configures and returns a list of TensorFlow callbacks for training, including model checkpointing,
-    early stopping, learning rate scheduling, and custom weight capture functionality. This function
-    also handles the creation of a `CaptureWeightsCallback` for capturing model weights during training,
-    which is returned alongside the list of callbacks for further use.
+    Sets up and returns TensorFlow callbacks for use during model training. These callbacks include early stopping,
+    learning rate scheduling, model checkpointing, and a custom callback for capturing model weights.
 
-    Args:
-        args (argparse.Namespace): Command line arguments provided to the training script. Expected
-                                   to contain 'patience' (for early stopping), 'train_epochs' (total number
-                                   of training epochs), and 'learning_rate' (initial learning rate).
-        checkpoint_path (str): Path to the directory where the model checkpoints will be saved. The best
-                               performing model according to validation loss will be saved to this location.
-        model (tf.keras.Model): The Keras model being trained. Required for some callbacks, such as
-                                the custom `CaptureWeightsCallback` which captures model weights.
+    This function is tailored to support flexible training configurations, allowing for dynamic adjustment of training
+    behavior based on model performance and training progress.
+
+    Parameters:
+        args (argparse.Namespace): Parsed command-line arguments containing training configurations such as patience for early stopping,
+                                   total training epochs, and initial learning rate.
+        checkpoint_path (str): File path where model checkpoints will be saved. The best model according to validation loss is checkpointed.
+        model (tf.keras.Model): The TensorFlow model being trained. Required for initializing the `CaptureWeightsCallback`.
+        model_name (str): Name of the model being trained. This can be used to adjust callback behavior for different models.
 
     Returns:
-        tuple: A tuple containing two elements:
-            - List of configured TensorFlow callbacks, including `ModelCheckpoint`, `EarlyStopping`,
-              `LearningRateScheduler`, and `CaptureWeightsCallback`.
-            - The `CaptureWeightsCallback` instance, which can be used to access captured weights after training.
+        tuple: A tuple containing:
+               - A list of TensorFlow callbacks configured for the training session.
+               - An instance of `CaptureWeightsCallback`, which can be used post-training to access captured weights.
 
     Raises:
-        Exception: If an error occurs during the setup of callbacks, an exception is logged and raised.
+        Exception: If an error occurs in the setup of callbacks, an exception is logged and raised to prevent silent training failures.
 
-    Example Usage:
-        >>> callbacks, capture_weights_callback = setup_callbacks(args, './checkpoints', model)
-        This prepares the training environment with necessary callbacks and allows for weight capture analysis.
+    Example:
+        >>> callbacks, capture_weights_callback = setup_callbacks(args, './model_checkpoints', model, 'my_model')
+        This example demonstrates how to invoke `setup_callbacks` to obtain configured callbacks for training, including a custom
+        weight capture callback for post-training analysis.
     """
     try:
         checkpoint_callback = ModelCheckpoint(
@@ -127,13 +130,16 @@ def setup_callbacks(args, checkpoint_path, model):
         )
 
         lr_schedule_callback = LearningRateScheduler(
-            lambda epoch: cosine_annealing(epoch, args.train_epochs, args.learning_rate, 1e-6),
+            lambda epoch: cosine_annealing(epoch, 5, args.learning_rate, 1e-6),
             verbose=1,
         )
 
         capture_weights_callback = CaptureWeightsCallback(model)
 
         callbacks = [checkpoint_callback, lr_schedule_callback, capture_weights_callback, early_stop_callback]
+        
+        if args.model == 'tsmixer':
+            callbacks = [checkpoint_callback, lr_schedule_callback, early_stop_callback]
         return callbacks, capture_weights_callback
     except Exception as e:
         logging.error(f"Error setting up callbacks: {e}")

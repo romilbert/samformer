@@ -1,6 +1,18 @@
+# coding=utf-8
 # MIT License
 # 
 # Copyright (c) 2024 Romain Ilbert
+# 
+# This TensorFlow implementation is inspired by the methodology introduced in the paper
+# "Stabilizing Transformer Training by Preventing Attention Entropy Collapse", and is adapted from
+# the original implementation available at: https://github.com/apple/ml-sigma-reparam. This work aims
+# to enhance the stability and performance of transformer models in TensorFlow by addressing the issue
+# of attention entropy collapse through the sigma-reparameterization technique.
+# 
+# The adaptation and modifications to the original concept for TensorFlow were developed to meet
+# the specific requirements of our projects, ensuring compatibility and performance within the TensorFlow
+# ecosystem. This implementation facilitates the practical application of the sigma-reparameterization
+# method to improve transformer training stability.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +31,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 
 import tensorflow as tf 
 from tensorflow.keras import layers

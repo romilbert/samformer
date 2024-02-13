@@ -51,143 +51,117 @@ import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 
 
+"""Load raw data and generate time series dataset."""
+
+
+DATA_DIR = 'gs://time_series_datasets'
+LOCAL_CACHE_DIR = './dataset/'
+
+
 class TSFDataLoader:
-    """
-    DataLoader for time series forecasting datasets.
+  """Generate data loader from raw data."""
 
-    Handles the loading, preprocessing, and dataset splitting for time series forecasting,
-    including support for univariate and multivariate series.
-    """
+  def __init__(
+      self, data, batch_size, seq_len, pred_len, feature_type, target='OT'
+  ):
+    self.data = data
+    self.batch_size = batch_size
+    self.seq_len = seq_len
+    self.pred_len = pred_len
+    self.feature_type = feature_type
+    self.target = target
+    self.target_slice = slice(0, None)
 
-    def __init__(self, data, batch_size, seq_len, pred_len, feature_type, target='OT'):
-        """
-        Initializes the DataLoader with dataset configurations.
+    self._read_data()
 
-        Parameters:
-            data (str): Identifier for the dataset.
-            batch_size (int): Batch size for the data loader.
-            seq_len (int): Length of input sequences.
-            pred_len (int): Length of prediction sequences.
-            feature_type (str): Type of features to use ('S', 'M', 'MS').
-            target (str): Target variable for forecasting. Defaults to 'OT'.
-        """
-        self.data = data
-        self.batch_size = batch_size
-        self.seq_len = seq_len
-        self.pred_len = pred_len
-        self.feature_type = feature_type
-        self.target = target
+  def _read_data(self):
+    """Load raw data and split datasets."""
 
-        self.current_directory = os.getcwd()
-        self.LOCAL_CACHE_DIR = os.path.join(self.current_directory, "dataset")
+    # copy data from cloud storage if not exists
+    if not os.path.isdir(LOCAL_CACHE_DIR):
+      os.mkdir(LOCAL_CACHE_DIR)
 
-        self._ensure_data_directory()
-        self._read_and_process_data()
+    file_name = self.data + '.csv'
+    cache_filepath = os.path.join(LOCAL_CACHE_DIR, file_name)
+    if not os.path.isfile(cache_filepath):
+      tf.io.gfile.copy(
+          os.path.join(DATA_DIR, file_name), cache_filepath, overwrite=True
+      )
+    df_raw = pd.read_csv(cache_filepath)
 
-    def _ensure_data_directory(self):
-        """Ensures that the local cache directory for dataset exists."""
-        if not os.path.exists(self.LOCAL_CACHE_DIR):
-            os.makedirs(self.LOCAL_CACHE_DIR)
+    # S: univariate-univariate, M: multivariate-multivariate, MS:
+    # multivariate-univariate
+    df = df_raw.set_index('date')
+    if self.feature_type == 'S':
+      df = df[[self.target]]
+    elif self.feature_type == 'MS':
+      target_idx = df.columns.get_loc(self.target)
+      self.target_slice = slice(target_idx, target_idx + 1)
 
-    def _read_and_process_data(self):
-        """
-        Reads the dataset from a file, preprocesses it, and splits it into
-        training, validation, and test sets.
-        """
-        file_name = f"{self.data}.csv"
-        cache_filepath = os.path.join(self.LOCAL_CACHE_DIR, file_name)
+    # split train/valid/test
+    n = len(df)
+    if self.data.startswith('ETTm'):
+      train_end = 12 * 30 * 24 * 4
+      val_end = train_end + 4 * 30 * 24 * 4
+      test_end = val_end + 4 * 30 * 24 * 4
+    elif self.data.startswith('ETTh'):
+      train_end = 12 * 30 * 24
+      val_end = train_end + 4 * 30 * 24
+      test_end = val_end + 4 * 30 * 24
+    else:
+      train_end = int(n * 0.7)
+      val_end = n - int(n * 0.2)
+      test_end = n
+    train_df = df[:train_end]
+    val_df = df[train_end - self.seq_len : val_end]
+    test_df = df[val_end - self.seq_len : test_end]
 
-        df_raw = pd.read_csv(cache_filepath)
-        df = df_raw.set_index('date')
+    # standardize by training set
+    self.scaler = StandardScaler()
+    self.scaler.fit(train_df.values)
 
-        if self.feature_type == 'S':
-            df = df[[self.target]]
-        elif self.feature_type == 'MS':
-            target_idx = df.columns.get_loc(self.target)
-            self.target_slice = slice(target_idx, target_idx + 1)
+    def scale_df(df, scaler):
+      data = scaler.transform(df.values)
+      return pd.DataFrame(data, index=df.index, columns=df.columns)
 
-        self._split_data(df)
-        self._scale_data()
+    self.train_df = scale_df(train_df, self.scaler)
+    self.val_df = scale_df(val_df, self.scaler)
+    self.test_df = scale_df(test_df, self.scaler)
+    self.n_feature = self.train_df.shape[-1]
 
-    def _split_data(self, df):
-        """
-        Splits the dataframe into training, validation, and test sets.
-        """
-        train_end = int(len(df) * 0.7)
-        val_end = train_end + int(len(df) * 0.2)
+  def _split_window(self, data):
+    inputs = data[:, : self.seq_len, :]
+    labels = data[:, self.seq_len :, self.target_slice]
+    # Slicing doesn't preserve static shape information, so set the shapes
+    # manually. This way the `tf.data.Datasets` are easier to inspect.
+    inputs.set_shape([None, self.seq_len, None])
+    labels.set_shape([None, self.pred_len, None])
+    return inputs, labels
 
-        self.train_df = df[:train_end]
-        self.val_df = df[train_end - self.seq_len:val_end]
-        self.test_df = df[val_end - self.seq_len:]
+  def _make_dataset(self, data, shuffle=True):
+    data = np.array(data, dtype=np.float32)
+    ds = tf.keras.utils.timeseries_dataset_from_array(
+        data=data,
+        targets=None,
+        sequence_length=(self.seq_len + self.pred_len),
+        sequence_stride=1,
+        shuffle=shuffle,
+        batch_size=self.batch_size,
+    )
+    ds = ds.map(self._split_window)
+    return ds
 
-    def _scale_data(self):
-        """
-        Scales the data using standard scaling based on the training set.
-        """
-        self.scaler = StandardScaler()
-        self.train_df = pd.DataFrame(self.scaler.fit_transform(self.train_df), columns=self.train_df.columns, index=self.train_df.index)
-        self.val_df = pd.DataFrame(self.scaler.transform(self.val_df), columns=self.val_df.columns, index=self.val_df.index)
-        self.test_df = pd.DataFrame(self.scaler.transform(self.test_df), columns=self.test_df.columns, index=self.test_df.index)
+  def inverse_transform(self, data):
+    return self.scaler.inverse_transform(data)
 
-    def _make_dataset(self, df, shuffle):
-        """
-        Converts a DataFrame into a tf.data.Dataset.
+  def get_train(self, shuffle=True):
+    return self._make_dataset(self.train_df, shuffle=shuffle)
 
-        Parameters:
-            df (pd.DataFrame): DataFrame to convert.
-            shuffle (bool): Whether to shuffle the dataset.
+  def get_val(self):
+    return self._make_dataset(self.val_df, shuffle=False)
 
-        Returns:
-            tf.data.Dataset: Resulting dataset.
-        """
-        data = np.array(df, dtype=np.float32)
-        ds = tf.keras.utils.timeseries_dataset_from_array(
-            data=data,
-            targets=None,
-            sequence_length=self.seq_len + self.pred_len,
-            sequence_stride=1,
-            shuffle=shuffle,
-            batch_size=self.batch_size,
-        )
-        return ds.map(self._split_window)
-
-    def _split_window(self, features):
-        """
-        Splits the input features into input sequences and target sequences.
-
-        Parameters:
-            features (tuple): Tuple of features.
-
-        Returns:
-            tuple: Tuple of (input_sequence, target_sequence).
-        """
-        inputs = features[:, :self.seq_len]
-        targets = features[:, self.seq_len:]
-        return inputs, targets
-
-    def get_train(self):
-        """Returns the training dataset."""
-        return self._make_dataset(self.train_df, shuffle=True)
-
-    def get_val(self):
-        """Returns the validation dataset."""
-        return self._make_dataset(self.val_df, shuffle=False)
-
-    def get_test(self):
-        """Returns the testing dataset."""
-        return self._make_dataset(self.test_df, shuffle=False)
-
-    def inverse_transform(self, data):
-        """
-        Applies the inverse transformation to the scaled data.
-
-        Parameters:
-            data (np.array): Scaled data to inverse transform.
-
-        Returns:
-            np.array: Original scale data.
-        """
-        return self.scaler.inverse_transform(data)
+  def get_test(self):
+    return self._make_dataset(self.test_df, shuffle=False)
 
 def extract_data(data):
     """
@@ -236,7 +210,10 @@ def load_data(args):
         train_data = tf.data.Dataset.from_tensor_slices((inputs[0], train_targets)).batch(args.batch_size)
         val_data = tf.data.Dataset.from_tensor_slices((inputs[1], val_targets)).batch(args.batch_size)
         test_data = tf.data.Dataset.from_tensor_slices((inputs[2], test_targets)).batch(args.batch_size)
+
+        return train_data, val_data, test_data
     else:
         data_loader = TSFDataLoader(args.data, args.batch_size, args.seq_len, args.pred_len, args.feature_type, args.target)
         train_data, val_data, test_data = data_loader.get_train(), data_loader.get_val(), data_loader.get_test()
-    return train_data, val_data, test_data
+
+        return train_data, val_data, test_data, data_loader.n_feature

@@ -1,6 +1,16 @@
+# coding=utf-8
 # MIT License
 # 
 # Copyright (c) 2024 Romain Ilbert
+# 
+# Based on the non-official PyTorch implementation of Sharpness-Aware Minimization (SAM) found at:
+# https://github.com/davda54/sam, which is an implementation of the paper:
+# "Sharpness-Aware Minimization for Efficiently Improving Generalization"
+# by Foret, Kleiner, Mobahi, and Neyshabur. The original PyTorch implementation is also under the MIT License.
+# 
+# This TensorFlow implementation of SAM is for our specific needs and aims to provide similar functionality
+# as the original PyTorch version, adhering to the principles of enhancing model performance while minimizing
+# loss sharpness for improved generalization.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +29,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+"""Implementation of Sharpness Aware Minimization."""
 
 import tensorflow as tf
 
@@ -71,9 +83,9 @@ class SAM:
         self.e_ws = []
         grad_norm = tf.linalg.global_norm(gradients)
         ew_multiplier = self.rho / (grad_norm + self.eps)
-        
-        for i, grad in enumerate(gradients):
-            e_w = tf.math.multiply(grad, ew_multiplier)
+
+        for i in range(len(trainable_vars)):
+            e_w = tf.math.multiply(gradients[i], ew_multiplier)
             trainable_vars[i].assign_add(e_w)
             self.e_ws.append(e_w)
 
@@ -86,6 +98,6 @@ class SAM:
             gradients (List[tf.Tensor]): Gradients of the loss with respect to the model parameters after the first step.
             trainable_variables (List[tf.Variable]): The model's trainable variables.
         """
-        for i, var in enumerate(trainable_variables):
-            var.assign_sub(self.e_ws[i])  # Revert first step
+        for i in range(len(trainable_variables)):
+            trainable_variables[i].assign_add(-self.e_ws[i])  # Revert first step
         self.base_optimizer.apply_gradients(zip(gradients, trainable_variables))

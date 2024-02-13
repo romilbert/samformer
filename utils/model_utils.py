@@ -86,15 +86,24 @@ def cosine_annealing(epoch, max_epochs, initial_lr, min_lr):
 
 def create_optimizer(args):
     """
-    Initialize the optimizer based on provided command line arguments.
+    Initializes a TensorFlow optimizer instance using the legacy Adam optimizer. This choice is
+    particularly aimed at addressing performance issues on Apple's M1/M2 Macs with TensorFlow v2.11+,
+    as recommended by TensorFlow documentation. However, the legacy optimizer is fully functional and
+    compatible across various platforms, making it a suitable choice for cross-platform projects.
+
+    It's important to note that while the legacy optimizer ensures compatibility and addresses specific
+    performance concerns, it might not include the latest optimizations and features present in the
+    standard Adam optimizer. 
 
     Parameters:
-    - args: Parsed command line arguments.
+    - args (argparse.Namespace): Parsed command line arguments, expected to contain 'learning_rate',
+      a float specifying the learning rate for the optimizer.
 
     Returns:
-    - A TensorFlow optimizer instance.
+    - tf.keras.optimizers.Optimizer: An instance of the legacy Adam optimizer configured with the specified learning rate.
     """
-    return tf.keras.optimizers.Adam(learning_rate=args.learning_rate)
+    return tf.keras.optimizers.legacy.Adam(learning_rate=args.learning_rate)
+
 
 def initialize_model(args, n_features):
     """
@@ -112,7 +121,7 @@ def initialize_model(args, n_features):
                         specifications provided in `args`.
     """
     model_kwargs = {
-        'model_input_shape': (args.seq_len, n_features),  # Define the shape of the input data.
+        'model_input_shape' : (args.seq_len, n_features),
         'pred_len': args.pred_len,  # Specify the prediction length for the model output.
         'norm_type': args.norm_type,  # Choose the type of normalization (Layer or Batch normalization).
         'activation': args.activation,  # Set the activation function for neural network layers.
@@ -130,7 +139,9 @@ def initialize_model(args, n_features):
         # Initialize a baseline linear model, projecting inputs directly to outputs without attention mechanisms.
         model = BaseModel(**model_kwargs, use_attention=False, use_sam=args.use_sam)
     elif args.model in ['transformer', 'transformer_random', 'spectrans']:
-        model_kwargs.update({
+        model_kwargs = {
+            'pred_len': args.pred_len,
+            'rho':args.rho,
             'num_heads': args.num_heads,  # Define the number of attention heads.
             'd_model': args.d_model,  # Set the dimensionality of the model's embeddings.
             'use_attention': True,  # Enable the use of attention mechanisms.
@@ -138,7 +149,7 @@ def initialize_model(args, n_features):
             'trainable': args.model not in ['transformer_random'],  # Specify if the model is trainable.
             'spec': args.model == 'spectrans',  # Indicate the use of sigma reparam, if selected.
             'use_sam': args.use_sam  # Apply Sharpness-Aware Minimization, if enabled.
-        })
+        }
         model = BaseModel(**model_kwargs)
     else:
         raise ValueError(f"Model '{args.model}' is not supported.")
@@ -174,12 +185,16 @@ def log_model_info(model, args):
     logging.info(f"Dataset: {args.data}")
     logging.info(f"Prediction horizon (pred_len): {args.pred_len}")
 
-    # Enhanced attribute checking and logging
-    if hasattr(model, 'use_revin'):
-        logging.info(f"Reversible instance normalization (RevIn): {'Enabled' if model.use_revin else 'Disabled'}")
-    if hasattr(model, 'spec'):
-        logging.info(f"Spectral reparametrization (spec): {'Enabled' if model.spec else 'Disabled'}")
-    if hasattr(model, 'trainable'):
-        logging.info(f"Attention trainability (trainable): {'Enabled' if model.trainable else 'Disabled'}")
+    if args.model == 'tsmixer':
+        logging.info(f"Reversible instance normalization (RevIn): {'Enabled'}")
+    else : 
+        # Enhanced attribute checking and logging
+        if hasattr(model, 'use_revin'):
+            logging.info(f"Reversible instance normalization (RevIn): {'Enabled' if model.use_revin else 'Disabled'}")
+        if hasattr(model, 'spec'):
+            logging.info(f"Spectral reparametrization (spec): {'Enabled' if model.spec else 'Disabled'}")
+        if hasattr(model, 'trainable'):
+            logging.info(f"Attention trainability (trainable): {'Enabled' if model.trainable else 'Disabled'}")
+    
 
     logging.info(f"{'Using SAM with rho=' + str(args.rho) if args.use_sam else 'Not using SAM'}")

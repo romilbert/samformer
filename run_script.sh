@@ -38,13 +38,11 @@ rhos=(0.7) # Placeholder. Adjust based on empirical data or specific requirement
 # Loop over each 'pred_len'.
 for pred_len in "${pred_lengths[@]}"
 do
-    num_runs=5 # Define the number of runs for each prediction length.
+    num_runs=1 # Define the number of runs for each prediction length.
     for rho in "${rhos[@]}"
     do
         for (( run=1; run<=num_runs; run++ ))
         do
-            echo "Executing run $run for prediction length $pred_len with rho value $rho."
-            
             # Execute the Python script with the specified parameters.
             # Adjust parameters like learning_rate, n_block, dropout, ff_dim, num_heads, and d_model based on the model and dataset.
             # Default parameters are used in https://github.com/google-research/google-research/tree/32d7e53a1bfedb36d659bc44cb03d93f2aef2c9b/tsmixer
@@ -84,9 +82,8 @@ do
                 continue
             fi
             
-            # Construct the command with conditional SAM usage.
-            command="python run.py --model $model --data $data --seq_len $seq_len --pred_len $pred_len --rho $rho ${use_sam_flag} ${add_results_flag}"
-            # Execute the command
+            command="python run.py --model $model --data $data --seq_len $seq_len --pred_len $pred_len --learning_rate $learning_rate --n_block $n_block --dropout $dropout --ff_dim $ff_dim --num_heads 1 --d_model 16 --rho $rho ${use_sam_flag} ${add_results_flag}"
+            
             echo "Executing: $command"
             eval $command
         done

@@ -74,7 +74,7 @@ def parse_args():
     parser.add_argument("--batch_size", type=int, default=32,
                         help="Batch size for training.")
 
-    parser.add_argument("--train_epochs", type=int, default=1,
+    parser.add_argument("--train_epochs", type=int, default=100,
                         help="Total number of training epochs.")
 
     parser.add_argument("--learning_rate", type=float, default=0.0001,
@@ -86,7 +86,7 @@ def parse_args():
     parser.add_argument("--patience", type=int, default=5,
                         help="Patience for early stopping.")
 
-    parser.add_argument("--n_blocks", type=int, default=2,
+    parser.add_argument("--n_block", type=int, default=2,
                         help="Number of blocks in the model architecture.")
 
     parser.add_argument("--ff_dim", type=int, default=2048,
@@ -129,6 +129,7 @@ def parse_args():
 def main():
     # Parse command-line arguments
     args = parse_args()
+    model_name = args.model
 
     # Configure the execution environment
     current_directory = configure_environment()
@@ -138,8 +139,11 @@ def main():
     logging.info(f"Experiment ID: {exp_id}")
     
     # Data loading with a clear distinction for toy data
-    n_features = 7 if args.data == 'toy' else None 
-    train_data, val_data, test_data = load_data(args)
+    if args.data == 'toy':
+        train_data, val_data, test_data = load_data(args)
+        n_features = 7
+    else : 
+        train_data, val_data, test_data, n_features = load_data(args)
     
     # Model initialization and configuration logging
     model = initialize_model(args, n_features)

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of SAMformer with Reversible Instance Normalization and Channel-Wise Attention."""
+"""Implementation of our Transformer with Reversible Instance Normalization and Channel-Wise Attention."""
 
 import tensorflow as tf
 from tensorflow.keras import layers
@@ -30,30 +30,41 @@ from models.utils import RevNorm, SAM, SpectralNormalizedAttention
 class BaseModel(tf.keras.Model):
     """
     A base model class that integrates various enhancements including 
-    reversible instance normalization, multi-head attention, and optionally,
-    spectral normalization and SAM optimization.
+    Reversible Instance Normalization and Channel-Wise Attention, and optionally,
+    spectral normalization and SAM optimization. To use SAMformer, enable use_sam,
+    use_attention, use_revin and trainable.
     
     Attributes:
-        pred_len (int): The length of the prediction.
-        num_heads (int): The number of attention heads.
-        d_model (int): The dimensionality of the model.
-        use_sam (bool): Flag to indicate the usage of SAM optimization.
-        use_attention (bool): Flag to indicate the usage of attention mechanism.
-        norm_type (str): Type of normalization to be applied.
-        activation (str): Activation function to be used.
-        dropout (float): Dropout rate.
-        ff_dim (int): Dimension of the feed-forward network.
-        n_blocks (int): Number of blocks.
-        use_blocks (bool): Flag to indicate the usage of blocks.
-        use_revin (bool): Flag to indicate the usage of reversible instance normalization.
-        trainable (bool): If the model should be trainable.
-        rho (float): Hyperparameter for SAM, if used.
-        spec (bool): Flag to indicate the usage of spectral normalization.
+        pred_len (int): The length of the output predictions.
+        num_heads (int): The number of heads in the multi-head attention mechanism. 
+        d_model (int): The dimensionality of the embedding vectors.
+        use_sam (bool): If True, applies Sharpness-Aware Minimization (SAM) optimization technique during training, 
+                        aiming to improve model generalization by considering the loss landscape's sharpness.
+        use_attention (bool): If True, enables the multi-head attention mechanism in the model. If False, the model is
+                              equivalent to a simple linear layer.
+        use_revin (bool): If True, applies Reversible Instance Normalization (RevIN) to the model.
+        trainable (bool): Specifies if the model's weights should be updated or frozen during training. Useful to 
+                          highlight some attention layer issues in Time Series Forecasting.
+        rho (float): The neighborhood size parameter for SAM optimization. It determines the radius within which SAM 
+                     seeks to minimize the sharpness of the loss landscape.
+        spec (bool): If True, applies spectral normalization (sigma-reparam) to the attention mechanism, aiming to
+                     stabilize the training by constraining the spectral norm of the weight matrices.
+        
+    Methods:
+        call(inputs, training=False): Defines the computation from inputs to outputs, optionally applying SAM, 
+                                      spectral normalization, and reversible instance normalization based on the 
+                                      configuration.
+        _apply_attention(x): Applies the attention mechanism to the input tensor, capturing the inter-dependencies 
+                             within the data thanks to the Channel-Wise Attention mechanism.
+        get_last_attention_weights(): Retrieves the attention weights from the last but one batch, useful for 
+                                      analysis and debugging purposes.
+        train_step(data): Custom training logic, including the application of SAM's two-step optimization process, 
+                          to improve model generalization and performance stability.
+
     """
 
     def __init__(self, pred_len, num_heads=1, d_model=16, use_sam=None, 
-                 use_attention=None, norm_type=None, activation=None, dropout=None, 
-                 ff_dim=None, n_blocks=None, use_blocks=False, use_revin=None, 
+                 use_attention=None, use_revin=None, 
                  trainable=None, rho=None, spec=None):
         super(BaseModel, self).__init__()
         self.pred_len = pred_len
@@ -61,14 +72,7 @@ class BaseModel(tf.keras.Model):
         self.d_model = d_model
         self.use_sam = use_sam
         self.use_attention = use_attention
-        self.norm_type = norm_type
-        self.activation = activation
-        self.dropout = dropout
-        self.ff_dim = ff_dim
-        self.n_blocks = n_blocks
-        self.use_blocks = use_blocks
         self.use_revin = use_revin
-        self.trainable = trainable
         self.rho = rho if use_sam and trainable else 0.0
         self.spec = spec
 
@@ -82,6 +86,9 @@ class BaseModel(tf.keras.Model):
         if self.spec:
             self.spec_layer = SpectralNormalizedAttention(num_heads=num_heads, key_dim=d_model)
 
+        #Define trainability of attention layer
+        self.attention_layer.trainable = trainable
+
     def call(self, inputs, training=False):
         """
         The forward pass for the model.
@@ -93,6 +100,7 @@ class BaseModel(tf.keras.Model):
         Returns:
             Tensor: The output of the model.
         """
+
         x = inputs
         if self.use_revin:
             x = self.rev_norm(x, mode='norm')
@@ -135,15 +143,8 @@ class BaseModel(tf.keras.Model):
             return self.all_attention_weights[-2]
         return None
 
-    def get_last_dense_weights(self):
-        """Returns the dense layer weights from the last but one batch."""
-        if len(self.all_dense_weights) > 1:
-            return self.all_dense_weights[-2]
-        return None
-
     def train_step(self, data):
-        # Instancier SAM ici ou le passer en tant qu'attribut du modèle
-        sam_optimizer = SAM(self.optimizer, rho=self.rho, eps=1e-12) #0.9 ou 1 avec les configs bien d_model et n_heads
+        sam_optimizer = SAM(self.optimizer, rho=self.rho, eps=1e-12) 
 
         # Unpack the data.
         x, y = data

@@ -57,7 +57,7 @@ def save_main_results(history, test_result, args, elapsed_training_time, current
         'train_mse': [history.history['loss'][np.argmin(history.history['val_loss'])]],
         'train_mae': [history.history['mae'][np.argmin(history.history['val_loss'])]],
         'training_time': elapsed_training_time,
-        'rho': args.rho
+        'rho': args.rho if args.use_sam and (args.model not in ['transformer_random']) else 0.0
     }
     df = pd.DataFrame(data)
     

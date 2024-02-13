@@ -42,6 +42,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Implementation of TSMixer with Reversible Instance Normalization."""
+
 from tensorflow.keras import layers, Model
 import tensorflow as tf
 from .utils import RevNorm, SAM
@@ -73,7 +75,7 @@ class TSMixerModel(Model):
     """
 
     def __init__(self, model_input_shape, pred_len, use_sam=None, norm_type=None, 
-                 activation="relu", dropout=0.1, ff_dim=128, n_blocks=1, rho=0.0):
+                 activation="relu", dropout=0.1, ff_dim=128, n_blocks=1, rho=None):
         super(TSMixerModel, self).__init__()
         self.model_input_shape = model_input_shape
         self.pred_len = pred_len
@@ -83,7 +85,7 @@ class TSMixerModel(Model):
         self.dropout = dropout
         self.ff_dim = ff_dim
         self.n_blocks = n_blocks
-        self.rho = rho
+        self.rho = rho if use_sam else 0.0
 
         self.rev_norm = RevNorm(axis=-2)
         self.temporal_dense = layers.Dense(model_input_shape[-2], activation=activation, name="temporal_dense")
@@ -106,8 +108,7 @@ class TSMixerModel(Model):
         """
         x = self.rev_norm(inputs, mode='norm')
         for _ in range(self.n_blocks):
-            x = self.res_block(x, self.norm_type, self.activation, self.dropout, self.ff_dim)
-
+            x = self.res_block(x, self.norm_type, self.dropout)
         x = tf.transpose(x, perm=[0, 2, 1])
         x = self.dense(x)
         outputs = tf.transpose(x, perm=[0, 2, 1])
@@ -148,36 +149,35 @@ class TSMixerModel(Model):
         return x + res
 
     def train_step(self, data):
-        """
-        Custom training logic, including the first and second steps of SAM optimization.
-        
-        Parameters:
-            data (tuple): A tuple of input data and labels.
-        
-        Returns:
-            dict: A dictionary mapping metric names to their current value.
-        """
+        """Custom training logic, including the application of SAM's two-step optimization  
+           process, to improve model generalization and performance stability."""
+        sam_optimizer = SAM(self.optimizer, rho=self.rho, eps=1e-12) 
+
+        # Unpack the data.
         x, y = data
 
-        if self.use_sam:
-            sam_optimizer = SAM(self.optimizer, rho=self.rho, eps=1e-12)
-        else:
-            # Fallback to the default optimizer if SAM is not used.
-            sam_optimizer = self.optimizer
-
-        # SAM's first step
         with tf.GradientTape() as tape:
-            y_pred = self(x, training=True)
+            y_pred = self(x, training=True)  # Forward pass
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+
+        # Compute gradients
         gradients = tape.gradient(loss, self.trainable_variables)
+
+        # Apply SAM's first step
         sam_optimizer.first_step(gradients, self.trainable_variables)
 
-        # SAM's second step
         with tf.GradientTape() as tape:
-            y_pred = self(x, training=True)
+            y_pred = self(x, training=True)  # Forward pass again
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+
+        # Compute gradients again
         gradients = tape.gradient(loss, self.trainable_variables)
+
+        # Apply SAM's second step
         sam_optimizer.second_step(gradients, self.trainable_variables)
 
+        # Update metrics
         self.compiled_metrics.update_state(y, y_pred)
+
+        # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
