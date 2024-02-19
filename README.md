@@ -79,7 +79,7 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 Do not hesitate to contribute to this project by submitting pull requests or issues, we would be happy to receive feedback and integrate your suggestions.
 
 ## Contact
-The joint first authors of [SAMformer](https://arxiv.org/abs/2402.10198) are [Romain Ilbert](https://github.com/romilbert) and [Ambroise Odonnat](https://github.com/AmbroiseOdonnat). In case of questions, feel free to contact them at the following addresses:
+The joint first authors of [SAMformer](https://arxiv.org/abs/2402.10198) are [Romain Ilbert](https://github.com/romilbert) and [Ambroise Odonnat](https://github.com/ambroiseodt). In case of questions, feel free to contact them at the following addresses:
 Romain Ilbert <romain.ilbert@hotmail.fr> - Ambroise Odonnat <ambroiseodonnattechnologie@gmail.com>
 
 ## Acknowledgements 
