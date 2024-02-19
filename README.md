@@ -74,16 +74,14 @@ sh run_script.sh -m transformer -d ETTh1 -u -a
 ```
 
 ## Authors
-The authors of this repository are [Romain Ilbert](https://github.com/romilbert) and [Ambroise Odonnat](https://github.com/AmbroiseOdonnat). See the paragraph "Contact" to contact them.
+The authors of this repository are [Romain Ilbert](https://github.com/romilbert) and [Ambroise Odonnat](https://github.com/AmbroiseOdonnat). You can contact them at the following addresses in case of questions:
+Romain Ilbert <romain.ilbert@hotmail.fr> - Ambroise Odonnat <ambroiseodonnattechnologie@gmail.com>
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
 
 ## Open-source Participation
 Do not hesitate to contribute to this project by submitting pull requests or issues, we would be happy to receive feedback and integrate your suggestions.
-
-## Contact
-Feel free to contact Romain Ilbert <romain.ilbert@hotmail.fr> or Ambroise Odonnat <ambroiseodonnattechnologie@gmail.com> if you have any questions. You can also open an issue.
 
 ## Acknowledgements 
 We would like to express our gratitude to all the researchers and developers whose work and open-source software have contributed to the development of SAMformer. Special thanks to the authors of [SAM](https://openreview.net/pdf?id=6Tm1mposlrM), [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0), [RevIN](https://openreview.net/pdf?id=cGDAkQo1C0p) and $\sigma$[Reparam](https://proceedings.mlr.press/v202/zhai23a/zhai23a.pdf) for their instructive works, which have enabled our approach. We provide below a non-exhaustive list of GitHub repositories that helped with valuable code base and datasets: 
