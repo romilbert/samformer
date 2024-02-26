@@ -1,6 +1,9 @@
 # SAMformer
 **This is the official implementation of SAMformer: [Unlocking the Potential of Transformers in Time Series Forecasting with Sharpness-Aware Minimization and Channel-Wise Attention](https://arxiv.org/abs/2402.10198).**
 
+## Authors
+Equal contribution between [Romain Ilbert](https://romilbert.github.io/) and [Ambroise Odonnat](https://scholar.google.com/citations?hl=en&user=M_OS-3kAAAAJ), and joint work with [Vasilii Feofanov](https://scholar.google.com/citations?user=UIteS6oAAAAJ&hl=en), [Aladin Virmaux](https://avirmaux.github.io/), [Giuseppe Paolo](https://www.giupaolo.com/), [Themis Palpanas](https://helios2.mi.parisdescartes.fr/~themisp/) and [Ievgen Redko](https://ievred.github.io/). 
+
 ## Overview
 **SAMformer** is a novel lightweight transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks. In particular, SAMformer surpasses the current state-of-the-art model [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0) by $\mathbf{14.33}$% on average, while having $\mathbf{\sim4}$ times fewer parameters.
 
