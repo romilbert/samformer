@@ -86,14 +86,7 @@ def cosine_annealing(epoch, max_epochs, initial_lr, min_lr):
 
 def create_optimizer(args):
     """
-    Initializes a TensorFlow optimizer instance using the legacy Adam optimizer. This choice is
-    particularly aimed at addressing performance issues on Apple's M1/M2 Macs with TensorFlow v2.11+,
-    as recommended by TensorFlow documentation. However, the legacy optimizer is fully functional and
-    compatible across various platforms, making it a suitable choice for cross-platform projects.
-
-    It's important to note that while the legacy optimizer ensures compatibility and addresses specific
-    performance concerns, it might not include the latest optimizations and features present in the
-    standard Adam optimizer. 
+    Initializes a TensorFlow optimizer instance using the Adam optimizer.
 
     Parameters:
     - args (argparse.Namespace): Parsed command line arguments, expected to contain 'learning_rate',
@@ -102,7 +95,7 @@ def create_optimizer(args):
     Returns:
     - tf.keras.optimizers.Optimizer: An instance of the legacy Adam optimizer configured with the specified learning rate.
     """
-    return tf.keras.optimizers.legacy.Adam(learning_rate=args.learning_rate)
+    return tf.keras.optimizers.Adam(learning_rate=args.learning_rate)
 
 
 def initialize_model(args, n_features):

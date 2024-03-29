@@ -37,7 +37,6 @@ tensorboard==2.13.0
 tensorboard-data-server==0.7.2
 tensorflow==2.13.0
 tensorflow-estimator==2.13.0
-tensorflow-macos==2.13.0
 termcolor==2.4.0
 threadpoolctl==3.2.0
 tqdm==4.66.1
