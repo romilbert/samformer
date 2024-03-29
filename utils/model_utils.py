@@ -93,7 +93,7 @@ def create_optimizer(args):
       a float specifying the learning rate for the optimizer.
 
     Returns:
-    - tf.keras.optimizers.Optimizer: An instance of the legacy Adam optimizer configured with the specified learning rate.
+    - tf.keras.optimizers.Optimizer: An instance of the Adam optimizer configured with the specified learning rate.
     """
     return tf.keras.optimizers.Adam(learning_rate=args.learning_rate)
 
