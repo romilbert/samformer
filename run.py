@@ -181,7 +181,7 @@ def main():
 
     # Additional metrics storage based on user request
     if args.add_results:
-        save_additional_metrics(model, args, history, test_result, elapsed_training_time, train_data, current_directory, capture_weights_callback)
+        save_additional_metrics(model, args, train_data, current_directory, capture_weights_callback)
 
 if __name__ == '__main__':
     main()
