@@ -3,7 +3,7 @@ astunparse==1.6.3
 cachetools==5.3.2
 certifi==2024.2.2
 charset-normalizer==3.3.2
-flatbuffers==23.5.26
+flatbuffers==24.3.25
 gast==0.4.0
 google-auth==2.27.0
 google-auth-oauthlib==1.0.0
