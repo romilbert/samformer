@@ -45,4 +45,4 @@ tzdata==2023.4
 urllib3==2.2.0
 Werkzeug==3.0.1
 wrapt==1.16.0
-zipp==3.17.0
+zipp==3.18.1
