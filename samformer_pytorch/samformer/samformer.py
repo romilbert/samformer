@@ -50,8 +50,7 @@ class SAMFormer:
     SAMFormer pytorch trainer implemented in the sklearn fashion
     """
     def __init__(self, device='cuda:0', num_epochs=100, batch_size=256, base_optimizer=torch.optim.Adam,
-                 learning_rate=1e-3, weight_decay=1e-5,
-                 rho=0.5, use_revin=True, random_state=None):
+                 learning_rate=1e-3, weight_decay=1e-5, rho=0.5, use_revin=True, random_state=None):
         self.network = None
         self.criterion = nn.MSELoss()
         self.device = device

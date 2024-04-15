@@ -3,6 +3,10 @@ import torch.nn as nn
 
 
 class RevIN(nn.Module):
+    """
+    Reversible Instance Normalization (RevIN) https://openreview.net/pdf?id=cGDAkQo1C0p
+    https://github.com/ts-kim/RevIN
+    """
     def __init__(self, num_features: int, eps=1e-5, affine=True):
         """
         :param num_features: the number of features or channels
