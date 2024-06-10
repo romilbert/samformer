@@ -1,12 +1,9 @@
 # SAMformer
 **The repository contains the official implementation of SAMformer, a transformer-based model for time series forecasting described in** 
 
->Romain Ilbert*, Ambroise Odonnat*, Vasilii Feofanov, Aladin virmaux, Giuseppe Paolo, Themis Palpanas, Ievgen redko.
+>Romain Ilbert*, Ambroise Odonnat*, Vasilii Feofanov, Aladin Virmaux, Giuseppe Paolo, Themis Palpanas, Ievgen redko.
 [SAMformer: Unlocking the Potential of Transformers in Time Series Forecasting with Sharpness-Aware Minimization and Channel-Wise Attention](https://arxiv.org/abs/2402.10198). **Oral ICML 2024**.
 <br/>*Equal contribution
-
-## Authors
-Equal contribution between [Romain Ilbert](https://romilbert.github.io/) and [Ambroise Odonnat](https://ambroiseodt.github.io/), and joint work with [Vasilii Feofanov](https://scholar.google.com/citations?user=UIteS6oAAAAJ&hl=en), [Aladin Virmaux](https://avirmaux.github.io/), [Giuseppe Paolo](https://www.giupaolo.com/), [Themis Palpanas](https://helios2.mi.parisdescartes.fr/~themisp/) and [Ievgen Redko](https://ievred.github.io/). 
 
 ## Overview
 **SAMformer** is a novel lightweight transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks. In particular, SAMformer surpasses the current state-of-the-art model [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0) by $\mathbf{14.33}$% on average, while having $\mathbf{\sim4}$ times fewer parameters.
@@ -86,8 +83,15 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 Do not hesitate to contribute to this project by submitting pull requests or issues, we would be happy to receive feedback and integrate your suggestions.
 
 ## Contact
-The joint first authors of [SAMformer](https://arxiv.org/abs/2402.10198) are [Romain Ilbert](https://github.com/romilbert) and [Ambroise Odonnat](https://github.com/ambroiseodt). In case of questions, feel free to contact them at the following addresses:
-Romain Ilbert <romain.ilbert@hotmail.fr> - Ambroise Odonnat <ambroiseodonnattechnologie@gmail.com>
+- [Romain Ilbert](https://romilbert.github.io/)
+- [Ambroise Odonnat](https://ambroiseodt.github.io/)
+- [Vasilii Feofanov](https://scholar.google.com/citations?user=UIteS6oAAAAJ&hl=en)
+- [Aladin Virmaux](https://avirmaux.github.io/)
+- [Giuseppe Paolo](https://www.giupaolo.com/)
+- [Themis Palpanas](https://helios2.mi.parisdescartes.fr/~themisp/)
+- [Ievgen Redko](https://ievred.github.io/). 
+
+Feel free to contact Romain Ilbert <romain.ilbert@hotmail.fr> - Ambroise Odonnat <ambroiseodonnattechnologie@gmail.com> in case of questions.
 
 ## Acknowledgements 
 We would like to express our gratitude to all the researchers and developers whose work and open-source software have contributed to the development of SAMformer. Special thanks to the authors of [SAM](https://openreview.net/pdf?id=6Tm1mposlrM), [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0), [RevIN](https://openreview.net/pdf?id=cGDAkQo1C0p) and $\sigma$[Reparam](https://proceedings.mlr.press/v202/zhai23a/zhai23a.pdf) for their instructive works, which have enabled our approach. We provide below a non-exhaustive list of GitHub repositories that helped with valuable code base and datasets: 
