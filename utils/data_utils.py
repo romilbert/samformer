@@ -193,6 +193,7 @@ def load_data(args):
     """
     if args.data == 'toy':
         np.random.seed(args.seed)
+        n_features=7
         sizes = [10000, 5000, 2000]  # Sizes for train, val, and test
         inputs = [np.random.normal(0, 1, (size, args.seq_len, 7)) for size in sizes]
         W = np.random.normal(0, 1, (args.seq_len, args.pred_len))
@@ -211,7 +212,7 @@ def load_data(args):
         val_data = tf.data.Dataset.from_tensor_slices((inputs[1], val_targets)).batch(args.batch_size)
         test_data = tf.data.Dataset.from_tensor_slices((inputs[2], test_targets)).batch(args.batch_size)
 
-        return train_data, val_data, test_data
+        return train_data, val_data, test_data, n_features
     else:
         data_loader = TSFDataLoader(args.data, args.batch_size, args.seq_len, args.pred_len, args.feature_type, args.target)
         train_data, val_data, test_data = data_loader.get_train(), data_loader.get_val(), data_loader.get_test()

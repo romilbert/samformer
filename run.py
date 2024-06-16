@@ -136,13 +136,9 @@ def main():
     # Establish experiment identification
     exp_id = setup_experiment_id(args)
     logging.info(f"Experiment ID: {exp_id}")
-    
-    # Data loading with a clear distinction for toy data
-    if args.data == 'toy':
-        train_data, val_data, test_data = load_data(args)
-        n_features = 7
-    else : 
-        train_data, val_data, test_data, n_features = load_data(args)
+
+    #Loading data
+    train_data, val_data, test_data, n_features = load_data(args)
     
     # Model initialization and configuration logging
     model = initialize_model(args, n_features)
@@ -181,7 +177,7 @@ def main():
 
     # Additional metrics storage based on user request
     if args.add_results:
-        save_additional_metrics(model, args, history, test_result, elapsed_training_time, train_data, current_directory, capture_weights_callback)
+        save_additional_metrics(model, args, train_data, current_directory, capture_weights_callback)
 
 if __name__ == '__main__':
     main()
