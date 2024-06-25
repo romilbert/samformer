@@ -22,7 +22,7 @@ class SAMFormerArchitecture(nn.Module):
         self.linear_forecaster = nn.Linear(seq_len, pred_horizon)
         self.use_revin = use_revin
 
-    def forward(self, x):
+    def forward(self, x, flatten_output=True):
         # RevIN Normalization
         if self.use_revin:
             x_norm = self.revin(x.transpose(1, 2), mode='norm').transpose(1, 2) # (n, D, L)
@@ -42,7 +42,10 @@ class SAMFormerArchitecture(nn.Module):
         # RevIN Denormalization
         if self.use_revin:
             out = self.revin(out.transpose(1, 2), mode='denorm').transpose(1, 2) # (n, D, H)
-        return out.reshape([out.shape[0], out.shape[1]*out.shape[2]])
+        if flatten_output:
+            return out.reshape([out.shape[0], out.shape[1]*out.shape[2]])
+        else:
+            return out
 
 
 class SAMFormer:
