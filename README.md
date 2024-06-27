@@ -1,4 +1,4 @@
-# SAMformer Paper (ICML'24 Oral)
+## SAMformer Paper (ICML'24 Oral)
 **The repository contains the official implementation of SAMformer, a transformer-based model for time series forecasting described in** 
 
 >Romain Ilbert*, Ambroise Odonnat*, Vasilii Feofanov, Aladin Virmaux, Giuseppe Paolo, Themis Palpanas, Ievgen redko.
