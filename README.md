@@ -3,13 +3,13 @@
 
 >Romain Ilbert*, Ambroise Odonnat*, Vasilii Feofanov, Aladin Virmaux, Giuseppe Paolo, Themis Palpanas, Ievgen redko.
 [SAMformer: Unlocking the Potential of Transformers in Time Series Forecasting with Sharpness-Aware Minimization and Channel-Wise Attention](https://arxiv.org/abs/2402.10198).
-<br/>*Equal contribution
+<br/>*Equal contribution for writing the paper.
 
-## Code Development
-This repository and the implementation of SAMformer were primarily developed by [Romain Ilbert](https://romilbert.github.io/). Paper slides can be found [here](https://romilbert.github.io/samformer_slides.pdf).
+## SAMformer Code and Experiments
+This repository, the design and the implementation of **SAMformer** were developed by [Romain Ilbert](https://romilbert.github.io/) who also conducted the experiments presented in the paper. Paper slides can be found [here](https://romilbert.github.io/samformer_slides.pdf).
 
 ## Overview
-**SAMformer** is a novel lightweight transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks. In particular, SAMformer surpasses the current state-of-the-art model [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0) by $\mathbf{14.33}$% on average, while having $\mathbf{\sim4}$ times fewer parameters.
+**SAMformer** is a novel lightweight transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks. In particular, SAMformer surpasses [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0) by $\mathbf{14.33}$% on average, while having $\mathbf{\sim4}$ times fewer parameters, and [iTransformer](https://openreview.net/pdf?id=JePfAI8fah) and [PatchTST](https://arxiv.org/pdf/2211.14730) by $\mathbf{6.58}$% and $\mathbf{8.79}$% respectively.
 
 ## Architecture
 **SAMformer** takes as input a $D$-dimensional time series of length $L$ (*look-back window*), arranged in a matrix $\mathbf{X}\in\mathbb{R}^{D\times L}$ and predicts its next $H$ values (*prediction horizon*), denoted by $\mathbf{Y}\in\mathbb{R}^{D\times H}$. The main components of the architecture are the following. 
