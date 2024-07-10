@@ -2,7 +2,7 @@
 **The repository contains the official implementation of SAMformer, a transformer-based model for time series forecasting described in** 
 
 >Romain Ilbert*, Ambroise Odonnat*, Vasilii Feofanov, Aladin Virmaux, Giuseppe Paolo, Themis Palpanas, Ievgen redko.
-[SAMformer: Unlocking the Potential of Transformers in Time Series Forecasting with Sharpness-Aware Minimization and Channel-Wise Attention](https://arxiv.org/abs/2402.10198).
+[SAMformer: Unlocking the Potential of Transformers in Time Series Forecasting with Sharpness-Aware Minimization and Channel-Wise Attention](https://arxiv.org/pdf/2402.10198).
 <br/>*Equal contribution for writing the paper.
 
 ## SAMformer Code and Experiments
