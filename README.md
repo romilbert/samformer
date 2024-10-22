@@ -3,7 +3,7 @@
 
 >Romain Ilbert*, Ambroise Odonnat*, Vasilii Feofanov, Aladin Virmaux, Giuseppe Paolo, Themis Palpanas, Ievgen redko.
 [SAMformer: Unlocking the Potential of Transformers in Time Series Forecasting with Sharpness-Aware Minimization and Channel-Wise Attention](https://arxiv.org/pdf/2402.10198).
-<br/>*Equal contribution for writing the paper.
+<br/>*Equal contribution.
 
 ## SAMformer Code and Experiments
 This repository, the design and the implementation of **SAMformer** were developed by [Romain Ilbert](https://romilbert.github.io/) who also conducted the experiments presented in the paper. Paper slides can be found [here](https://romilbert.github.io/samformer_slides.pdf).
