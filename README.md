@@ -80,6 +80,9 @@ sh run_script.sh -m transformer -d ETTh1 -u -a
 ## Open-source Participation
 Do not hesitate to contribute to this project, we would be happy to receive feedback and integrate your suggestions.
 
+## Licence
+The code is distributed under the MIT licence.
+
 ## Authors
 [Romain Ilbert](https://romilbert.github.io/) designed the methodology, developped the codebase and conducted the experiments. [Ambroise Odonnat](https://ambroiseodt.github.io/) designed the methodology, developped the theory and led the writing. [Vasilii Feofanov](https://scholar.google.com/citations?user=UIteS6oAAAAJ&hl=en) provided the PyTorch implementation of SAMformer. Correspondence to <romain.ilbert@hotmail.fr> and <ambroiseodonnattechnologie@gmail.com>.
 
@@ -103,5 +106,4 @@ If you find this work useful in your research, please cite:
   publisher =    {PMLR},
   url = 	 {https://proceedings.mlr.press/v235/ilbert24a.html},
 }
-
 ```
