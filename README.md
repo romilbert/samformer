@@ -77,11 +77,8 @@ sh run_script.sh -m [model_name] -d [dataset_name] -s [sequence_length] -u -a
 sh run_script.sh -m transformer -d ETTh1 -u -a
 ```
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
-
 ## Open-source Participation
-Do not hesitate to contribute to this project by submitting pull requests or issues, we would be happy to receive feedback and integrate your suggestions.
+Do not hesitate to contribute to this project, we would be happy to receive feedback and integrate your suggestions.
 
 ## Authors
 [Romain Ilbert](https://romilbert.github.io/) designed the methodology, developped the codebase and conducted the experiments. [Ambroise Odonnat](https://ambroiseodt.github.io/) designed the methodology, developped the theory and led the writing. [Vasilii Feofanov](https://scholar.google.com/citations?user=UIteS6oAAAAJ&hl=en) provided the PyTorch implementation of SAMformer. Correspondence to <romain.ilbert@hotmail.fr> and <ambroiseodonnattechnologie@gmail.com>.
