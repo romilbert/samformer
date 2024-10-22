@@ -85,7 +85,7 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 ## Open-source Participation
 Do not hesitate to contribute to this project by submitting pull requests or issues, we would be happy to receive feedback and integrate your suggestions.
 
-## Contact
+## Authors
 - [Romain Ilbert](https://romilbert.github.io/)
 - [Ambroise Odonnat](https://ambroiseodt.github.io/)
 - [Vasilii Feofanov](https://scholar.google.com/citations?user=UIteS6oAAAAJ&hl=en)
