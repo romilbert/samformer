@@ -1,15 +1,13 @@
 ## SAMformer (ICML'24 Oral)
-**The repository contains the official implementation of SAMformer, a transformer-based model for time series forecasting described in** 
+**This repository contains the official implementation of SAMformer, a transformer-based model for time series forecasting from** 
 
->Romain Ilbert*, Ambroise Odonnat*, Vasilii Feofanov, Aladin Virmaux, Giuseppe Paolo, Themis Palpanas, Ievgen Redko.
-[SAMformer: Unlocking the Potential of Transformers in Time Series Forecasting with Sharpness-Aware Minimization and Channel-Wise Attention](https://arxiv.org/pdf/2402.10198).
+>[SAMformer: Unlocking the Potential of Transformers in Time Series Forecasting with Sharpness-Aware Minimization and Channel-Wise Attention](https://arxiv.org/pdf/2402.10198). Romain Ilbert*, Ambroise Odonnat*, Vasilii Feofanov, Aladin Virmaux, Giuseppe Paolo, Themis Palpanas, Ievgen Redko.
 <br/>*Equal contribution.
 
-## Code and Experiments
-[Romain Ilbert](https://romilbert.github.io/) developed the codebase and conducted the experiments presented in the paper. For a quick presentation of SAMformer, see [here](https://romilbert.github.io/samformer_slides.pdf).
+Click [here](https://romilbert.github.io/samformer_slides.pdf) for a quick introduction to SAMformer and [here](https://ambroiseodt.github.io/assets/pdf/Presentation_ICML_2024_Generic.pdf) for a more in-depth presentation.
 
 ## Overview
-**SAMformer** is a novel lightweight transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks. In particular, SAMformer surpasses [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0) by $\mathbf{14.33}$% on average, while having $\mathbf{\sim4}$ times fewer parameters, and [iTransformer](https://openreview.net/pdf?id=JePfAI8fah) and [PatchTST](https://arxiv.org/pdf/2211.14730) by $\mathbf{6.58}$% and $\mathbf{8.79}$% respectively.
+**SAMformer** is a lightweight transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks. In particular, SAMformer surpasses [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0) by $\mathbf{14.33}$% on average, while having $\mathbf{\sim4}$ times fewer parameters, and [iTransformer](https://openreview.net/pdf?id=JePfAI8fah) and [PatchTST](https://arxiv.org/pdf/2211.14730) by $\mathbf{6.58}$% and $\mathbf{8.79}$% respectively.
 
 ## Architecture
 **SAMformer** takes as input a $D$-dimensional time series of length $L$ (*look-back window*), arranged in a matrix $\mathbf{X}\in\mathbb{R}^{D\times L}$ and predicts its next $H$ values (*prediction horizon*), denoted by $\mathbf{Y}\in\mathbb{R}^{D\times H}$. The main components of the architecture are the following. 
@@ -86,15 +84,7 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 Do not hesitate to contribute to this project by submitting pull requests or issues, we would be happy to receive feedback and integrate your suggestions.
 
 ## Authors
-- [Romain Ilbert](https://romilbert.github.io/)
-- [Ambroise Odonnat](https://ambroiseodt.github.io/)
-- [Vasilii Feofanov](https://scholar.google.com/citations?user=UIteS6oAAAAJ&hl=en)
-- [Aladin Virmaux](https://avirmaux.github.io/)
-- [Giuseppe Paolo](https://www.giupaolo.com/)
-- [Themis Palpanas](https://helios2.mi.parisdescartes.fr/~themisp/)
-- [Ievgen Redko](https://ievred.github.io/). 
-
-Feel free to contact Romain Ilbert <romain.ilbert@hotmail.fr> - Ambroise Odonnat <ambroiseodonnattechnologie@gmail.com> in case of questions.
+[Romain Ilbert](https://romilbert.github.io/) designed the methodology, developped the codebase and conducted the experiments. [Ambroise Odonnat](https://ambroiseodt.github.io/) designed the methodology, developped the theory and led the writing. [Vasilii Feofanov](https://scholar.google.com/citations?user=UIteS6oAAAAJ&hl=en) provided the PyTorch implementation of SAMformer. Correspondence to <romain.ilbert@hotmail.fr> and <ambroiseodonnattechnologie@gmail.com>.
 
 ## Acknowledgements 
 We would like to express our gratitude to all the researchers and developers whose work and open-source software have contributed to the development of SAMformer. Special thanks to the authors of [SAM](https://openreview.net/pdf?id=6Tm1mposlrM), [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0), [RevIN](https://openreview.net/pdf?id=cGDAkQo1C0p) and $\sigma$[Reparam](https://proceedings.mlr.press/v202/zhai23a/zhai23a.pdf) for their instructive works, which have enabled our approach. We provide below a non-exhaustive list of GitHub repositories that helped with valuable code base and datasets: 
@@ -104,3 +94,17 @@ We would like to express our gratitude to all the researchers and developers who
  - [Informer](https://github.com/zhouhaoyi/Informer2020)
  - [FEDformer](https://github.com/MAZiqing/FEDformer)
 
+## Citation
+If you find this work useful in your research, please cite:
+```
+@InProceedings{ilbert2024samformer,
+  title = 	 {SAMformer: Unlocking the Potential of Transformers in Time Series Forecasting with Sharpness-Aware Minimization and Channel-Wise Attention},
+  author =       {Ilbert, Romain and Odonnat, Ambroise and Feofanov, Vasilii and Virmaux, Aladin and Paolo, Giuseppe and Palpanas, Themis and Redko, Ievgen},
+  booktitle = 	 {Proceedings of the 41st International Conference on Machine Learning},
+  year = 	 {2024},
+  volume = 	 {235},
+  publisher =    {PMLR},
+  url = 	 {https://proceedings.mlr.press/v235/ilbert24a.html},
+}
+
+```
