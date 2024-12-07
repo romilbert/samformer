@@ -91,7 +91,7 @@ The code is distributed under the MIT license.
 
 ## Ressources
 
-This work was conducted on the Jean Zay supercomputer at [IDRIS](https://www.idris.fr/), with access granted under the GENCI allocation AD011013858R1-ILBERT. 
+This work was conducted on the Jean Zay supercomputer at [IDRIS](https://www.idris.fr/), with access granted under the GENCI allocation AD011013858R1-ILBERT. We sincerely thank IDRIS and GENCI for providing the computational resources that made this research possible.
 
 ## Acknowledgements 
 We would like to express our gratitude to all the researchers and developers whose work and open-source software have contributed to the development of SAMformer. Special thanks to the authors of [SAM](https://openreview.net/pdf?id=6Tm1mposlrM), [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0), [RevIN](https://openreview.net/pdf?id=cGDAkQo1C0p) and $\sigma$[Reparam](https://proceedings.mlr.press/v202/zhai23a/zhai23a.pdf) for their instructive works, which have enabled our approach. We provide below a non-exhaustive list of GitHub repositories that helped with valuable code base and datasets: 
