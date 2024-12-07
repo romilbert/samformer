@@ -58,7 +58,8 @@ fi
 pred_lengths=(96 192 336 720) # Prediction horizons (modifiable as needed)
 rhos=(0.7)                    # Default rho values for SAM optimization (modifiable as needed)
 
-# Loop over each 'pred_len'.
+# ----------------------------
+# Loop over prediction lengths and configurations
 for pred_len in "${pred_lengths[@]}"
 do
     num_runs=1 # Define the number of runs for each prediction length.
