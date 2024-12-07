@@ -1,5 +1,5 @@
 #!/bin/bash
-# set -x  # Comment out or remove this line to reduce verbosity
+# run_script.sh: Automates the execution of experiments for time series forecasting models.
 
 # Initialize variables with default values
 model=""
