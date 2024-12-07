@@ -106,6 +106,7 @@ do
                 continue
             fi
             
+            # Construct the command with the appropriate parameters
             command="python run.py --model $model --data $data --seq_len $seq_len --pred_len $pred_len --learning_rate $learning_rate --n_block $n_block --dropout $dropout --ff_dim $ff_dim --num_heads 1 --d_model 16 --rho $rho ${use_sam_flag} ${add_results_flag}"
             
             echo "Executing: $command"
