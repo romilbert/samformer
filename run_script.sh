@@ -1,6 +1,12 @@
 #!/bin/bash
 # run_script.sh: Automates the execution of experiments for time series forecasting models.
 
+# Description:
+# This script runs a Python training script (`run.py`) for a specified model and dataset across 
+# multiple prediction lengths and configurations. It supports options for enabling Sharpness-Aware Minimization (SAM) 
+# and saving additional results. Parameters like learning rate, number of blocks, dropout, and feedforward dimensions 
+# are dynamically adjusted based on the dataset.
+
 # Initialize variables with default values
 model=""
 data=""
