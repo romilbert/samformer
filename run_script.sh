@@ -7,6 +7,9 @@
 # and saving additional results. Parameters like learning rate, number of blocks, dropout, and feedforward dimensions 
 # are dynamically adjusted based on the dataset.
 
+# Usage:
+# ./run_script.sh -m <model_name> -d <dataset_name> [-s <sequence_length>] [-u] [-a]
+
 # Initialize variables with default values
 model=""
 data=""
