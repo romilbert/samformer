@@ -29,6 +29,7 @@ seq_len=512
 use_sam_flag=""
 add_results_flag=""
 
+# ----------------------------
 # Parse named command line arguments
 while getopts "m:d:s:ua" opt; do
   case ${opt} in
