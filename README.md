@@ -5,7 +5,7 @@
 >**Romain Ilbert***, **Ambroise Odonnat***, Vasilii Feofanov, Aladin Virmaux, Giuseppe Paolo, Themis Palpanas, Ievgen Redko.
 <br/>***Equal contribution**.
 
-Click [here](https://romilbert.github.io/samformer_slides_ICML_final_pdf.pdf) to access the ICML oral presentation on SAMformer.
+Click [here](https://romilbert.github.io/samformer_slides_ICML_final_pdf.pdf) to access Romain Ilbert's ICML oral presentation on SAMformer.
 
 ## Overview
 **SAMformer** is a lightweight transformer architecture designed for time series forecasting. It uniquely integrates Sharpness-Aware Minimization (SAM) with a Channel-Wise Attention mechanism. This method provides state-of-the-art performance in multivariate long-term forecasting across various forecasting tasks. In particular, SAMformer surpasses [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0) by $\mathbf{14.33}$% on average, while having $\mathbf{\sim4}$ times fewer parameters, and [iTransformer](https://openreview.net/pdf?id=JePfAI8fah) and [PatchTST](https://arxiv.org/pdf/2211.14730) by $\mathbf{6.58}$% and $\mathbf{8.79}$% respectively.
@@ -85,7 +85,13 @@ Do not hesitate to contribute to this project, we would be happy to receive feed
 The code is distributed under the MIT license.
 
 ## Authors
-[Romain Ilbert](https://romilbert.github.io/) designed the methodology, developed the codebase and led the experiments. [Ambroise Odonnat](https://ambroiseodt.github.io/) designed the methodology, developed the theory and led the writing. [Vasilii Feofanov](https://scholar.google.com/citations?user=UIteS6oAAAAJ&hl=en) provided the PyTorch implementation of SAMformer. All authors contributed to discussions and writing. Correspondence to <romain.ilbert@hotmail.fr> and <ambroiseodonnattechnologie@gmail.com>.
+[Romain Ilbert](https://romilbert.github.io/) led the development of SAMformer, including the model's architecture, codebase, experimental design and co-led the writing process. 
+[Ambroise Odonnat](https://ambroiseodt.github.io/) contributed to the theoretical insights, and co-led the writing process.
+[Vasilii Feofanov](https://scholar.google.com/citations?user=UIteS6oAAAAJ&hl=en) provided the PyTorch implementation of the SAMformer's model. All authors contributed to discussions and writing. Correspondence to <romain.ilbert@hotmail.fr> and <ambroiseodonnattechnologie@gmail.com>.
+
+## Ressources
+
+This work was conducted on the Jean Zay supercomputer at [IDRIS](https://www.idris.fr/), with access granted under the GENCI allocation AD011013858R1-ILBERT. 
 
 ## Acknowledgements 
 We would like to express our gratitude to all the researchers and developers whose work and open-source software have contributed to the development of SAMformer. Special thanks to the authors of [SAM](https://openreview.net/pdf?id=6Tm1mposlrM), [TSMixer](https://openreview.net/pdf?id=wbpxTuXgm0), [RevIN](https://openreview.net/pdf?id=cGDAkQo1C0p) and $\sigma$[Reparam](https://proceedings.mlr.press/v202/zhai23a/zhai23a.pdf) for their instructive works, which have enabled our approach. We provide below a non-exhaustive list of GitHub repositories that helped with valuable code base and datasets: 
