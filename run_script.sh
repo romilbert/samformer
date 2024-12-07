@@ -9,6 +9,13 @@
 
 # Usage:
 # ./run_script.sh -m <model_name> -d <dataset_name> [-s <sequence_length>] [-u] [-a]
+#
+# Options:
+#   -m <model_name>        Name of the model to use (e.g., transformer, lstm, etc.).
+#   -d <dataset_name>      Name of the dataset (e.g., ETTh1, traffic, weather).
+#   -s <sequence_length>   Input sequence length (default: 512).
+#   -u                     Enable SAM optimization.
+#   -a                     Save additional results.
 
 # Initialize variables with default values
 model=""
