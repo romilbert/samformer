@@ -17,6 +17,9 @@
 #   -u                     Enable SAM optimization.
 #   -a                     Save additional results.
 
+# Example:
+# ./run_script.sh -m transformer -d ETTh1 -s 512 -u -a
+
 # Initialize variables with default values
 model=""
 data=""
