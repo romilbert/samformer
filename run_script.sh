@@ -53,10 +53,10 @@ if [ -z "$model" ] || [ -z "$data" ]; then
     exit 1
 fi
 
-# Define a list of 'pred_len' (prediction lengths) you want to execute.
-pred_lengths=(96 192 336 720) # Extend or modify based on your experiment's needs.
-# Use a default rho value. For optimal rho values per model/dataset/horizon, please refer to Appendix Table 3.
-rhos=(0.7) # For an optimal rho, please refer to Table 3 in our paper 
+# ----------------------------
+# Experiment parameters
+pred_lengths=(96 192 336 720) # Prediction horizons (modifiable as needed)
+rhos=(0.7)                    # Default rho values for SAM optimization (modifiable as needed)
 
 # Loop over each 'pred_len'.
 for pred_len in "${pred_lengths[@]}"
