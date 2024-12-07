@@ -45,6 +45,7 @@ done
 
 shift $((OPTIND -1))
 
+# ----------------------------
 # Validation to ensure required parameters are provided
 if [ -z "$model" ] || [ -z "$data" ]; then
     echo "Model and data must be specified."
